@@ -17,7 +17,12 @@ CrimShop is a client-side image editor built with vanilla JavaScript. It runs en
 - `app.js` - All application logic (~27KB)
 
 ### State Management
-Single global `state` object in `app.js` containing:
+Single global `globalState` object in `app.js` containing:
+- Workspaces map (each workspace ID -> workspace state)
+- Active workspace ID
+- Next workspace ID counter
+
+Each workspace state contains:
 - Canvas and context references
 - Layer array with off-screen canvases
 - Active tool and drawing parameters
@@ -102,8 +107,16 @@ Do not add:
 ### Layout
 - Three-column: tools (left), canvas (center), layers/effects (right)
 - Top toolbar for file operations and undo/redo
+- Tab bar for workspace management (below toolbar)
 - Modals for dialogs (new image, resize, effects with sliders, save options, metadata)
 - Collapsible sidebars with toggle buttons (state persisted in localStorage)
+
+### Workspace System
+- Multiple independent workspaces with tabs
+- Start tab: welcome screen, cannot be closed, no canvas/layers
+- Workspace tabs: created via New/Open, closeable, independent state
+- Each workspace has: canvas, layers, history, metadata, tools state
+- Import Layer: adds images to current workspace without changing dimensions
 
 ## Testing
 
@@ -161,6 +174,45 @@ python3 -m http.server 8000
   - Only visible layers are included in export
 
 ## Common Patterns
+
+### Workspace Management
+```javascript
+// Create a new workspace
+const workspaceId = createWorkspace('Workspace Name', 800, 600, '#FFFFFF');
+
+// Switch to a workspace
+switchWorkspace(workspaceId);
+
+// Close a workspace (except start tab)
+closeWorkspace(workspaceId);
+
+// Get current workspace state
+const currentState = getState(); // or use global 'state' variable
+
+// Update tab bar after changes
+updateTabBar();
+```
+
+### Import Layer Pattern
+```javascript
+// Import image as layer (doesn't change canvas dimensions)
+async function handleImportLayer(e) {
+    const file = e.target.files[0];
+    const image = await Image.read(uint8Array);
+    
+    // For single-frame: create one layer
+    const layer = createLayer(file.name);
+    // Draw image onto layer (clipped if larger than canvas)
+    layer.ctx.drawImage(tempCanvas, 0, 0);
+    
+    // For multi-frame: create multiple layers
+    for (const frame of image.frames) {
+        const layer = createLayer(`${file.name} - Frame ${i + 1}`);
+        layer.duration = frame.duration;
+        layer.ctx.drawImage(frameCanvas, 0, 0);
+    }
+}
+```
 
 ### Creating UI Elements
 ```javascript

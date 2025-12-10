@@ -155,6 +155,9 @@ function switchWorkspace(workspaceId) {
     
     if (workspaceId === 'start') {
         showStartScreen();
+        // Clear layers panel for start tab
+        const layersPanel = document.getElementById('layersPanel');
+        layersPanel.innerHTML = '';
     } else {
         hideStartScreen();
         

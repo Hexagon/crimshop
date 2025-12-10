@@ -120,6 +120,7 @@ body {
     transition: all 0.2s;
 }
 
+/* Rotate arrow icon when sidebar is collapsed */
 .sidebar.collapsed .collapse-toggle {
     right: 5px;
     transform: rotate(180deg);

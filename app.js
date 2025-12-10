@@ -1,6 +1,10 @@
 // Import cross-image from jsdelivr CDN
 import { Image } from 'https://cdn.jsdelivr.net/npm/cross-image@0.2.2/esm/mod.js';
 
+// Constants
+const MIN_LAYER_DURATION = 10;
+const MULTI_FRAME_FORMATS = ['gif', 'apng', 'tiff'];
+
 // Application state
 const state = {
     canvas: null,
@@ -302,8 +306,7 @@ async function handleFileUpload(e) {
             // Clear existing layers
             state.layers = [];
             
-            for (let i = 0; i < image.frames.length; i++) {
-                const frame = image.frames[i];
+            for (const [i, frame] of image.frames.entries()) {
                 const layer = createLayer(`${file.name} - Frame ${i + 1}`);
                 
                 // Set duration if available
@@ -375,7 +378,7 @@ async function applySaveImage() {
         let mimeType;
         let extension;
         
-        if (multiFrame && (format === 'gif' || format === 'apng' || format === 'tiff')) {
+        if (multiFrame && MULTI_FRAME_FORMATS.includes(format)) {
             // Multi-frame export
             const frames = [];
             
@@ -411,8 +414,13 @@ async function applySaveImage() {
             );
             
             // Add additional frames
-            for (let i = 1; i < frames.length; i++) {
-                image.addFrame(frames[i].data, frames[i].duration);
+            try {
+                for (let i = 1; i < frames.length; i++) {
+                    image.addFrame(frames[i].data, frames[i].duration);
+                }
+            } catch (frameError) {
+                console.error('Error adding frame:', frameError);
+                throw new Error(`Failed to add frame ${i}: ${frameError.message}`);
             }
             
             // Encode based on format
@@ -896,7 +904,7 @@ function showLayerDurationModal(layerIndex) {
 
 function applyLayerDuration() {
     const duration = parseInt(document.getElementById('layerDurationInput').value);
-    if (duration >= 10) {
+    if (duration >= MIN_LAYER_DURATION) {
         state.layers[state.tempLayerIndex].duration = duration;
         updateLayersPanel();
         saveState();

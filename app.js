@@ -194,7 +194,11 @@ function switchWorkspace(workspaceId) {
         updateLayersPanel();
         composeLayers();
         updateUI();
-        updateMetadataTable();
+        
+        // Update metadata table if we have state
+        if (state && state.metadata) {
+            updateMetadataTable();
+        }
     }
     
     updateTabBar();
@@ -1441,20 +1445,6 @@ function removeCustomMetadataField(fieldName) {
     }
 }
 
-function showMetadataEditor() {
-    // Expand the metadata panel if collapsed
-    const metadataSection = document.querySelector('[data-panel="metadata"]').closest('.panel-section');
-    if (metadataSection.classList.contains('collapsed')) {
-        metadataSection.classList.remove('collapsed');
-    }
-    updateMetadataTable();
-}
-
-function applyMetadata() {
-    // Metadata is saved in real-time via input event listeners
-    // This function is kept for compatibility but does nothing
-}
-
 // Panel Section Toggle
 function togglePanelSection(panelName) {
     const header = document.querySelector(`[data-panel="${panelName}"]`);
@@ -1469,14 +1459,14 @@ function togglePanelSection(panelName) {
 }
 
 function restorePanelStates() {
-    // Restore panel collapse states
-    const panels = ['tools', 'color', 'brushSettings', 'layers', 'transforms', 'effects', 'metadata'];
-    panels.forEach(panelName => {
+    // Restore panel collapse states by finding all panels in the DOM
+    const panelHeaders = document.querySelectorAll('[data-panel]');
+    panelHeaders.forEach(header => {
+        const panelName = header.dataset.panel;
         const isCollapsed = localStorage.getItem(`panel-${panelName}-collapsed`) === 'true';
         if (isCollapsed) {
-            const header = document.querySelector(`[data-panel="${panelName}"]`);
-            if (header) {
-                const section = header.closest('.panel-section');
+            const section = header.closest('.panel-section');
+            if (section) {
                 section.classList.add('collapsed');
             }
         }

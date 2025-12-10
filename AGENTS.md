@@ -13,8 +13,17 @@ CrimShop is a client-side image editor built with vanilla JavaScript. It runs en
 
 ### Core Components
 - `index.html` - Application structure and UI layout
-- `styles.css` - Dark theme styling (~6KB)
-- `app.js` - All application logic (~27KB)
+- `styles.css` - Dark theme styling
+- `app.js` - Main application entry point
+- `js/` - Modular JavaScript files:
+  - `state.js` - State management and workspace handling
+  - `layers.js` - Layer operations and management
+  - `drawing.js` - Drawing tools and canvas operations
+  - `file-io.js` - File import/export operations
+  - `effects.js` - Image effects and transforms
+  - `history.js` - Undo/redo functionality
+  - `metadata.js` - Metadata editor
+  - `ui.js` - UI updates and event handling
 
 ### State Management
 Single global `globalState` object in `app.js` containing:
@@ -34,6 +43,27 @@ Each workspace state contains:
 - Layers compose onto main canvas on-demand
 - Bottom-to-top rendering order
 - Each layer has a duration property (milliseconds) for animation export
+
+### Module Architecture
+The application uses ES6 modules for code organization:
+- **No build process**: Modules load directly in the browser via `type="module"`
+- **Clean separation**: Each module has a focused responsibility
+- **Import/export**: Standard ES6 import/export syntax
+- **Shared state**: The `state` object is imported where needed
+- **Entry point**: `app.js` initializes and coordinates all modules
+
+Module dependencies flow:
+```
+app.js (main)
+  ├── js/state.js (core state, no dependencies)
+  ├── js/layers.js (depends on state)
+  ├── js/drawing.js (depends on state, layers)
+  ├── js/history.js (depends on state, layers)
+  ├── js/file-io.js (depends on state, layers, history)
+  ├── js/effects.js (depends on state, layers, history)
+  ├── js/metadata.js (depends on state)
+  └── js/ui.js (depends on all other modules)
+```
 
 ## Code Style
 
@@ -300,7 +330,6 @@ function closeModal(modalId) {
 ❌ Add backend/server functionality  
 ❌ Use TypeScript or JSX  
 ❌ Add CSS preprocessors  
-❌ Create separate module files (keep app.js as single file)  
 ❌ Add linting configs (keep it simple)  
 
 ## Performance Considerations

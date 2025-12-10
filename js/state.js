@@ -1,0 +1,65 @@
+// State Management Module
+
+// Global state for managing workspaces
+export const globalState = {
+    workspaces: new Map(),
+    activeWorkspaceId: 'start',
+    nextWorkspaceId: 1
+};
+
+// Create a workspace state object
+export function createWorkspaceState(canvas, ctx) {
+    return {
+        canvas: canvas,
+        ctx: ctx,
+        layers: [],
+        activeLayerIndex: 0,
+        tool: 'select',
+        isDrawing: false,
+        startX: 0,
+        startY: 0,
+        foregroundColor: '#000000',
+        backgroundColor: '#FFFFFF',
+        brushSize: 10,
+        opacity: 1.0,
+        history: [],
+        historyIndex: -1,
+        maxHistory: 50,
+        metadata: {
+            // Basic fields
+            title: '',
+            author: '',
+            description: '',
+            copyright: '',
+            // Standard EXIF fields
+            artist: '',
+            software: 'CrimShop',
+            dateTime: '',
+            make: '',
+            model: '',
+            orientation: '',
+            xResolution: '',
+            yResolution: '',
+            resolutionUnit: '',
+            keywords: '',
+            comment: ''
+        },
+        customMetadataFields: [], // Array of custom field names
+        previewCanvas: null,
+        previewCtx: null,
+        moveOffsetX: 0,
+        moveOffsetY: 0
+    };
+}
+
+// Get current workspace state
+export function getState() {
+    return globalState.workspaces.get(globalState.activeWorkspaceId);
+}
+
+// Application state (for backwards compatibility, now points to active workspace)
+export let state = null;
+
+export function setState(newState) {
+    state = newState;
+}

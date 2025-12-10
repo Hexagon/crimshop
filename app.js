@@ -1,84 +1,12 @@
-// Import cross-image from jsdelivr CDN
-import { Image } from 'https://cdn.jsdelivr.net/npm/cross-image@0.2.3/esm/mod.js';
+// Import modules
+import { Image } from './js/constants.js';
+import { MIN_LAYER_DURATION, MULTI_FRAME_FORMATS } from './js/constants.js';
+import { globalState, createWorkspaceState } from './js/state.js';
+import * as LayersModule from './js/layers.js';
+import * as HistoryModule from './js/history.js';
+import * as UIModule from './js/ui.js';
 
-// Constants
-const MIN_LAYER_DURATION = 10;
-const MULTI_FRAME_FORMATS = ['gif', 'apng', 'tiff'];
-
-// Global state for managing workspaces
-const globalState = {
-    workspaces: new Map(),
-    activeWorkspaceId: 'start',
-    nextWorkspaceId: 1
-};
-
-// Create a workspace state object
-function createWorkspaceState(canvas, ctx) {
-    return {
-        canvas: canvas,
-        ctx: ctx,
-        layers: [],
-        activeLayerIndex: 0,
-        tool: 'select',
-        isDrawing: false,
-        startX: 0,
-        startY: 0,
-        foregroundColor: '#000000',
-        backgroundColor: '#FFFFFF',
-        brushSize: 10,
-        opacity: 1.0,
-        history: [],
-        historyIndex: -1,
-        maxHistory: 50,
-        metadata: {
-            // Basic information
-            title: '',
-            description: '',
-            author: '',
-            copyright: '',
-            software: 'CrimShop',
-            userComment: '',
-            creationDate: null,
-            
-            // GPS coordinates
-            latitude: null,
-            longitude: null,
-            
-            // Camera settings
-            cameraMake: '',
-            cameraModel: '',
-            lensMake: '',
-            lensModel: '',
-            iso: null,
-            exposureTime: null,
-            fNumber: null,
-            focalLength: null,
-            flash: null,
-            whiteBalance: null,
-            orientation: null,
-            
-            // Technical
-            dpiX: null,
-            dpiY: null,
-            physicalWidth: null,
-            physicalHeight: null,
-            
-            // Custom fields (stored in a sub-object per cross-image spec)
-            custom: {}
-        },
-        previewCanvas: null,
-        previewCtx: null,
-        moveOffsetX: 0,
-        moveOffsetY: 0
-    };
-}
-
-// Get current workspace state
-function getState() {
-    return globalState.workspaces.get(globalState.activeWorkspaceId);
-}
-
-// Application state (for backwards compatibility, now points to active workspace)
+// Application state (points to active workspace)
 let state = null;
 
 // Initialize the application
@@ -290,107 +218,46 @@ function updateTabBar() {
     }
 }
 
+// Layer Management - using modules
 function createLayerObject(workspaceState, name, isBackground = false) {
-    const canvas = document.createElement('canvas');
-    canvas.width = workspaceState.canvas.width;
-    canvas.height = workspaceState.canvas.height;
-    
-    return {
-        id: workspaceState.layers.length,
-        name: name || `Layer ${workspaceState.layers.length + 1}`,
-        canvas: canvas,
-        ctx: canvas.getContext('2d', { willReadFrequently: true }),
-        visible: true,
-        opacity: 1.0,
-        isBackground: isBackground,
-        duration: 100
-    };
+    return LayersModule.createLayerObject(workspaceState, name, isBackground);
 }
 
 function fillLayerInWorkspace(workspaceState, layerIndex, color) {
-    const layer = workspaceState.layers[layerIndex];
-    layer.ctx.fillStyle = color;
-    layer.ctx.fillRect(0, 0, layer.canvas.width, layer.canvas.height);
+    LayersModule.fillLayerInWorkspace(workspaceState, layerIndex, color);
 }
 
-
-// Layer Management
 function createLayer(name = 'Layer', isBackground = false) {
-    const canvas = document.createElement('canvas');
-    canvas.width = state.canvas.width;
-    canvas.height = state.canvas.height;
-    
-    const layer = {
-        id: state.layers.length,
-        name: name || `Layer ${state.layers.length + 1}`,
-        canvas: canvas,
-        ctx: canvas.getContext('2d', { willReadFrequently: true }),
-        visible: true,
-        opacity: 1.0,
-        isBackground: isBackground,
-        duration: 100 // Default duration in milliseconds for animations
-    };
-    
-    state.layers.push(layer);
-    state.activeLayerIndex = state.layers.length - 1;
-    
+    const layer = LayersModule.createLayer(state, name, isBackground);
     updateLayersPanel();
     composeLayers();
     return layer;
 }
 
 function fillLayer(layerIndex, color) {
-    const layer = state.layers[layerIndex];
-    layer.ctx.fillStyle = color;
-    layer.ctx.fillRect(0, 0, layer.canvas.width, layer.canvas.height);
+    LayersModule.fillLayer(state, layerIndex, color);
 }
 
 function deleteLayer(layerIndex) {
-    if (state.layers.length <= 1) {
-        alert('Cannot delete the last layer!');
-        return;
+    if (LayersModule.deleteLayer(state, layerIndex)) {
+        updateLayersPanel();
+        composeLayers();
+        saveState();
     }
-    
-    state.layers.splice(layerIndex, 1);
-    
-    // Adjust active layer index
-    if (state.activeLayerIndex >= state.layers.length) {
-        state.activeLayerIndex = state.layers.length - 1;
-    }
-    
-    // Re-index layers
-    state.layers.forEach((layer, index) => {
-        layer.id = index;
-    });
-    
-    updateLayersPanel();
-    composeLayers();
-    saveState();
 }
 
 function toggleLayerVisibility(layerIndex) {
-    state.layers[layerIndex].visible = !state.layers[layerIndex].visible;
+    LayersModule.toggleLayerVisibility(state, layerIndex);
     composeLayers();
 }
 
 function setActiveLayer(layerIndex) {
-    state.activeLayerIndex = layerIndex;
+    LayersModule.setActiveLayer(state, layerIndex);
     updateLayersPanel();
 }
 
 function composeLayers() {
-    // Clear main canvas
-    state.ctx.clearRect(0, 0, state.canvas.width, state.canvas.height);
-    
-    // Draw layers from bottom to top
-    state.layers.forEach(layer => {
-        if (layer.visible) {
-            state.ctx.globalAlpha = layer.opacity;
-            state.ctx.drawImage(layer.canvas, 0, 0);
-        }
-    });
-    
-    state.ctx.globalAlpha = 1.0;
+    if (state) LayersModule.composeLayers(state);
 }
 
 function updateLayersPanel() {
@@ -1230,102 +1097,30 @@ function applyBoxBlur(imageData, radius) {
     }
 }
 
-// History (Undo/Redo)
+// History (Undo/Redo) - using modules
 function saveState() {
-    // Remove any states after current index
-    state.history = state.history.slice(0, state.historyIndex + 1);
-    
-    // Save current state
-    const layerStates = state.layers.map(layer => {
-        const canvas = document.createElement('canvas');
-        canvas.width = layer.canvas.width;
-        canvas.height = layer.canvas.height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(layer.canvas, 0, 0);
-        return {
-            name: layer.name,
-            visible: layer.visible,
-            opacity: layer.opacity,
-            isBackground: layer.isBackground,
-            duration: layer.duration,
-            imageData: canvas
-        };
-    });
-    
-    state.history.push({
-        layers: layerStates,
-        activeLayerIndex: state.activeLayerIndex,
-        canvasWidth: state.canvas.width,
-        canvasHeight: state.canvas.height
-    });
-    
-    // Limit history size
-    if (state.history.length > state.maxHistory) {
-        state.history.shift();
-    } else {
-        state.historyIndex++;
-    }
-    
-    updateUI();
+    HistoryModule.saveState(state, updateUI);
 }
 
 function undo() {
-    if (state.historyIndex > 0) {
-        state.historyIndex--;
-        restoreState(state.history[state.historyIndex]);
-    }
+    HistoryModule.undo(state, updateLayersPanel, composeLayers, updateUI);
 }
 
 function redo() {
-    if (state.historyIndex < state.history.length - 1) {
-        state.historyIndex++;
-        restoreState(state.history[state.historyIndex]);
-    }
+    HistoryModule.redo(state, updateLayersPanel, composeLayers, updateUI);
 }
 
 function restoreState(historyState) {
-    // Restore canvas size
-    state.canvas.width = historyState.canvasWidth;
-    state.canvas.height = historyState.canvasHeight;
-    
-    // Restore layers
-    state.layers = historyState.layers.map((layerState, index) => {
-        const canvas = document.createElement('canvas');
-        canvas.width = layerState.imageData.width;
-        canvas.height = layerState.imageData.height;
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        ctx.drawImage(layerState.imageData, 0, 0);
-        
-        return {
-            id: index,
-            name: layerState.name,
-            canvas: canvas,
-            ctx: ctx,
-            visible: layerState.visible,
-            opacity: layerState.opacity,
-            isBackground: layerState.isBackground,
-            duration: layerState.duration || 100
-        };
-    });
-    
-    state.activeLayerIndex = historyState.activeLayerIndex;
-    
-    updateLayersPanel();
-    composeLayers();
-    updateUI();
+    HistoryModule.restoreState(state, historyState, updateLayersPanel, composeLayers, updateUI);
 }
 
-// UI Updates
+// UI Updates - using modules
 function updateUI() {
-    document.getElementById('undoBtn').disabled = state.historyIndex <= 0;
-    document.getElementById('redoBtn').disabled = state.historyIndex >= state.history.length - 1;
+    UIModule.updateUI(state);
 }
 
 function updatePreviewCanvasSize() {
-    if (state.previewCanvas) {
-        state.previewCanvas.width = state.canvas.width;
-        state.previewCanvas.height = state.canvas.height;
-    }
+    UIModule.updatePreviewCanvasSize(state);
 }
 
 // Metadata Helper Functions
@@ -1616,6 +1411,7 @@ function removeCustomMetadataField(fieldName) {
 }
 
 // Panel Section Toggle
+// UI Panel Management - using modules
 function togglePanelSection(panelName) {
     const header = document.querySelector(`[data-panel="${panelName}"]`);
     if (!header) return;
@@ -1629,22 +1425,20 @@ function togglePanelSection(panelName) {
 }
 
 function restorePanelStates() {
-    // Restore panel collapse states by finding all panels in the DOM
-    const panelHeaders = document.querySelectorAll('[data-panel]');
-    panelHeaders.forEach(header => {
-        const panelName = header.dataset.panel;
-        const isCollapsed = localStorage.getItem(`panel-${panelName}-collapsed`) === 'true';
-        if (isCollapsed) {
-            const section = header.closest('.panel-section');
-            if (section) {
-                section.classList.add('collapsed');
-            }
-        }
-    });
+    UIModule.restorePanelStates();
 }
 
+function toggleSidebar(sidebarId) {
+    UIModule.toggleSidebar(sidebarId);
+}
 
-// Layer Duration Editor
+function restoreUIState() {
+    UIModule.restoreUIState();
+}
+
+function closeModal(modalId) {
+    UIModule.closeModal(modalId);
+}
 function showLayerDurationModal(layerIndex) {
     state.tempLayerIndex = layerIndex;
     const layer = state.layers[layerIndex];
@@ -1746,32 +1540,6 @@ function applyImageDimensions() {
 }
 
 // Collapsible Sidebar Functions
-function toggleSidebar(sidebarId) {
-    const sidebar = document.getElementById(sidebarId);
-    sidebar.classList.toggle('collapsed');
-    
-    // Save state to localStorage
-    const isCollapsed = sidebar.classList.contains('collapsed');
-    localStorage.setItem(`${sidebarId}-collapsed`, isCollapsed);
-}
-
-function restoreUIState() {
-    // Restore sidebar collapse states
-    ['leftSidebar', 'rightSidebar'].forEach(sidebarId => {
-        const isCollapsed = localStorage.getItem(`${sidebarId}-collapsed`) === 'true';
-        if (isCollapsed) {
-            document.getElementById(sidebarId).classList.add('collapsed');
-        }
-    });
-    
-    // Restore panel collapse states
-    restorePanelStates();
-}
-
-function closeModal(modalId) {
-    document.getElementById(modalId).classList.remove('active');
-}
-
 // Event Listeners
 function setupEventListeners() {
     // Canvas events - will be bound to the current state

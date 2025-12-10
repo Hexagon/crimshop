@@ -131,8 +131,8 @@ function createWorkspace(name, width = 800, height = 600, bgColor = '#FFFFFF') {
     saveState();
     updateUI();
     
-    // Add tab
-    addTab(workspaceId, name);
+    // Update tab bar
+    updateTabBar();
     
     // Hide start screen
     hideStartScreen();
@@ -253,11 +253,6 @@ function updateTabBar() {
         
         tabBar.appendChild(tab);
     }
-}
-
-function addTab(workspaceId, name) {
-    // Tab will be created by updateTabBar
-    updateTabBar();
 }
 
 function createLayerObject(workspaceState, name, isBackground = false) {

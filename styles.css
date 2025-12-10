@@ -217,13 +217,6 @@ body {
     color: #888;
 }
 
-/* Main Content */
-.main-content {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-}
-
 /* Sidebars */
 .sidebar {
     background: #252525;

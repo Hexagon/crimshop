@@ -866,39 +866,31 @@ async function applySaveImage() {
                     width: tempCanvas.width,
                     height: tempCanvas.height,
                     data: new Uint8Array(imageData.data),
-                    duration: layer.duration
+                    frameMetadata: {
+                        delay: layer.duration
+                    }
                 });
             }
             
-            // Create multi-frame image
-            const image = Image.fromRGBA(
-                frames[0].width,
-                frames[0].height,
-                frames[0].data
-            );
+            // Create MultiFrameImageData object
+            const multiFrameImageData = {
+                width: state.canvas.width,
+                height: state.canvas.height,
+                frames: frames,
+                metadata: hasMetadata(state.metadata) ? cleanMetadataForExport(state.metadata) : undefined
+            };
             
-            // Add additional frames
-            let frameIndex = 1;
-            try {
-                for (frameIndex = 1; frameIndex < frames.length; frameIndex++) {
-                    image.addFrame(frames[frameIndex].data, frames[frameIndex].duration);
-                }
-            } catch (frameError) {
-                console.error('Error adding frame:', frameError);
-                throw new Error(`Failed to add frame ${frameIndex}: ${frameError.message}`);
-            }
-            
-            // Encode based on format
+            // Encode based on format using Image.encodeFrames
             if (format === 'gif') {
-                fileData = await image.save('gif');
+                fileData = await Image.encodeFrames('gif', multiFrameImageData);
                 mimeType = 'image/gif';
                 extension = 'gif';
             } else if (format === 'apng') {
-                fileData = await image.save('apng');
+                fileData = await Image.encodeFrames('apng', multiFrameImageData);
                 mimeType = 'image/apng';
                 extension = 'apng';
             } else if (format === 'tiff') {
-                fileData = await image.save('tiff');
+                fileData = await Image.encodeFrames('tiff', multiFrameImageData);
                 mimeType = 'image/tiff';
                 extension = 'tiff';
             }

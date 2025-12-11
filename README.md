@@ -48,9 +48,31 @@ Visit [https://hexagon.github.io/crimshop/](https://hexagon.github.io/crimshop/)
 ## Technology
 
 - Pure vanilla JavaScript (no frameworks)
+- ES6 modules for clean code organization
 - [cross-image@0.2.2](https://github.com/cross-org/image) for image processing
 - HTML5 Canvas API for rendering
 - CSS3 for modern UI styling
+
+## Architecture
+
+CrimShop uses a modular architecture with ES6 modules:
+- **No build process**: Modules load directly in the browser
+- **8 focused modules**: Each handles a specific responsibility
+- **1,091 line main file**: Down from 1,764 (38% reduction)
+
+```
+js/
+├── constants.js    - Shared constants and library imports
+├── state.js        - State management and workspace handling
+├── layers.js       - Layer operations and composition
+├── drawing.js      - Drawing tools (brush, eraser, shapes)
+├── file-io.js      - File import/export with multi-frame support
+├── effects.js      - Image effects and transforms
+├── history.js      - Undo/redo functionality
+└── ui.js           - UI helpers and updates
+```
+
+For more details, see [IMPROVEMENTS.md](IMPROVEMENTS.md).
 
 ## Development
 

@@ -423,8 +423,8 @@ export function stopDrawing(state, e, composeLayers, saveState) {
                         shiftY = newY < 0 ? Math.abs(newY) : 0;
                         
                         // Resize layer
-                        layer.canvas.width = requiredWidth + shiftX;
-                        layer.canvas.height = requiredHeight + shiftY;
+                        layer.canvas.width = requiredWidth;
+                        layer.canvas.height = requiredHeight;
                         
                         // Restore content with shift
                         layer.ctx.clearRect(0, 0, layer.canvas.width, layer.canvas.height);

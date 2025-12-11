@@ -481,10 +481,18 @@ function deleteSelection() {
 function updateToolOptions() {
     if (!state) return;
     
+    const brushOptions = document.getElementById('brushOptions');
     const selectionOptions = document.getElementById('selectionOptions');
     const fillOptions = document.getElementById('fillOptions');
     const gradientOptions = document.getElementById('gradientOptions');
     const isSelectionTool = ['pointer', 'rectSelect', 'freeformSelect'].includes(state.tool);
+    const isBrushTool = ['brush', 'eraser'].includes(state.tool);
+    
+    if (isBrushTool) {
+        brushOptions.style.display = 'block';
+    } else {
+        brushOptions.style.display = 'none';
+    }
     
     if (isSelectionTool) {
         selectionOptions.style.display = 'block';

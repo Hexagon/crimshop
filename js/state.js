@@ -14,7 +14,7 @@ export function createWorkspaceState(canvas, ctx) {
         ctx: ctx,
         layers: [],
         activeLayerIndex: 0,
-        tool: 'select',
+        tool: 'pointer',
         isDrawing: false,
         startX: 0,
         startY: 0,
@@ -48,7 +48,11 @@ export function createWorkspaceState(canvas, ctx) {
         previewCanvas: null,
         previewCtx: null,
         moveOffsetX: 0,
-        moveOffsetY: 0
+        moveOffsetY: 0,
+        // Selection state
+        selection: null, // {x, y, width, height, imageData}
+        selectionPath: null, // For freeform selection (array of points)
+        selectionType: 'rect' // 'rect' or 'freeform'
     };
 }
 

@@ -1,5 +1,8 @@
 // Drawing tools module
 
+// Import selection functions
+import * as Selection from './selection.js';
+
 export function getMousePos(state, e) {
     const rect = state.canvas.getBoundingClientRect();
     return {
@@ -20,6 +23,24 @@ export function startDrawing(state, e, composeLayers) {
         // Store the offset for moving the layer
         state.moveOffsetX = 0;
         state.moveOffsetY = 0;
+        return;
+    }
+    
+    if (state.tool === 'select' || state.tool === 'rectSelect') {
+        // Clear any existing selection when starting a new one
+        Selection.clearSelection(state);
+        return;
+    }
+    
+    if (state.tool === 'freeformSelect') {
+        // Start freeform selection path
+        state.selectionPath = [{ x: pos.x, y: pos.y }];
+        Selection.clearSelection(state);
+        return;
+    }
+    
+    if (state.tool === 'pointer') {
+        // Pointer tool just selects, doesn't draw
         return;
     }
     
@@ -67,7 +88,6 @@ export function draw(state, e, composeLayers) {
         case 'rect':
         case 'circle':
         case 'line':
-        case 'select':
             // Draw preview
             state.previewCtx.clearRect(0, 0, state.previewCanvas.width, state.previewCanvas.height);
             state.previewCtx.strokeStyle = state.foregroundColor;
@@ -75,7 +95,7 @@ export function draw(state, e, composeLayers) {
             state.previewCtx.globalAlpha = 0.7;
             state.previewCtx.setLineDash([5, 5]);
             
-            if (state.tool === 'rect' || state.tool === 'select') {
+            if (state.tool === 'rect') {
                 const width = pos.x - state.startX;
                 const height = pos.y - state.startY;
                 state.previewCtx.strokeRect(state.startX, state.startY, width, height);
@@ -96,6 +116,64 @@ export function draw(state, e, composeLayers) {
             
             state.previewCtx.setLineDash([]);
             state.previewCtx.globalAlpha = 1.0;
+            break;
+            
+        case 'select':
+        case 'rectSelect':
+            // Draw selection preview
+            state.previewCtx.clearRect(0, 0, state.previewCanvas.width, state.previewCanvas.height);
+            state.previewCtx.strokeStyle = '#000000';
+            state.previewCtx.lineWidth = 1;
+            state.previewCtx.setLineDash([8, 8]);
+            
+            const width = pos.x - state.startX;
+            const height = pos.y - state.startY;
+            state.previewCtx.strokeRect(state.startX, state.startY, width, height);
+            
+            // Draw white outline for contrast
+            state.previewCtx.strokeStyle = '#ffffff';
+            state.previewCtx.lineDashOffset = 8;
+            state.previewCtx.strokeRect(state.startX, state.startY, width, height);
+            
+            state.previewCtx.setLineDash([]);
+            state.previewCtx.lineDashOffset = 0;
+            break;
+            
+        case 'freeformSelect':
+            // Add point to path
+            if (state.selectionPath) {
+                state.selectionPath.push({ x: pos.x, y: pos.y });
+                
+                // Draw path preview
+                state.previewCtx.clearRect(0, 0, state.previewCanvas.width, state.previewCanvas.height);
+                state.previewCtx.strokeStyle = '#000000';
+                state.previewCtx.lineWidth = 1;
+                state.previewCtx.setLineDash([4, 4]);
+                
+                state.previewCtx.beginPath();
+                state.previewCtx.moveTo(state.selectionPath[0].x, state.selectionPath[0].y);
+                for (let i = 1; i < state.selectionPath.length; i++) {
+                    state.previewCtx.lineTo(state.selectionPath[i].x, state.selectionPath[i].y);
+                }
+                state.previewCtx.stroke();
+                
+                // Draw white outline for contrast
+                state.previewCtx.strokeStyle = '#ffffff';
+                state.previewCtx.lineDashOffset = 4;
+                state.previewCtx.beginPath();
+                state.previewCtx.moveTo(state.selectionPath[0].x, state.selectionPath[0].y);
+                for (let i = 1; i < state.selectionPath.length; i++) {
+                    state.previewCtx.lineTo(state.selectionPath[i].x, state.selectionPath[i].y);
+                }
+                state.previewCtx.stroke();
+                
+                state.previewCtx.setLineDash([]);
+                state.previewCtx.lineDashOffset = 0;
+            }
+            break;
+            
+        case 'pointer':
+            // Pointer tool doesn't draw during drag
             break;
             
         case 'move':
@@ -165,7 +243,22 @@ export function stopDrawing(state, e, composeLayers, saveState) {
             break;
             
         case 'select':
-            // Select tool doesn't draw, just shows selection
+        case 'rectSelect':
+            // Create rectangular selection
+            const selWidth = pos.x - state.startX;
+            const selHeight = pos.y - state.startY;
+            Selection.createRectSelection(state, state.startX, state.startY, selWidth, selHeight);
+            break;
+            
+        case 'freeformSelect':
+            // Complete freeform selection
+            if (state.selectionPath && state.selectionPath.length > 2) {
+                Selection.createFreeformSelection(state, state.selectionPath);
+            }
+            break;
+            
+        case 'pointer':
+            // Pointer tool doesn't modify the canvas
             break;
     }
     

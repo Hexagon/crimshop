@@ -8,6 +8,7 @@ import * as UIModule from './js/ui.js';
 import * as DrawingModule from './js/drawing.js';
 import * as FileIOModule from './js/file-io.js';
 import * as EffectsModule from './js/effects.js';
+import * as SelectionModule from './js/selection.js';
 
 // Application state (points to active workspace)
 let state = null;
@@ -341,6 +342,11 @@ function draw(e) {
 
 function stopDrawing(e) {
     DrawingModule.stopDrawing(state, e, composeLayers, saveState);
+    
+    // Start selection animation if a selection was created
+    if (state && state.selection) {
+        startSelectionAnimation();
+    }
 }
 
 // File Operations - using modules
@@ -448,6 +454,66 @@ function updateUI() {
 
 function updatePreviewCanvasSize() {
     UIModule.updatePreviewCanvasSize(state);
+}
+
+// Selection Functions
+function selectAll() {
+    if (!state) return;
+    SelectionModule.selectAll(state);
+    startSelectionAnimation();
+}
+
+function deselect() {
+    if (!state) return;
+    SelectionModule.clearSelection(state);
+    stopSelectionAnimation();
+    state.previewCtx.clearRect(0, 0, state.previewCanvas.width, state.previewCanvas.height);
+}
+
+function deleteSelection() {
+    if (!state) return;
+    const deleted = SelectionModule.deleteSelection(state, composeLayers, saveState);
+    if (deleted) {
+        stopSelectionAnimation();
+    }
+}
+
+function updateToolOptions() {
+    if (!state) return;
+    
+    const selectionOptions = document.getElementById('selectionOptions');
+    const isSelectionTool = ['pointer', 'rectSelect', 'freeformSelect'].includes(state.tool);
+    
+    if (isSelectionTool) {
+        selectionOptions.style.display = 'block';
+    } else {
+        selectionOptions.style.display = 'none';
+    }
+}
+
+// Selection animation
+let selectionAnimationId = null;
+
+function startSelectionAnimation() {
+    if (selectionAnimationId) return; // Already running
+    
+    function animate(timestamp) {
+        if (state && state.selection) {
+            SelectionModule.drawSelectionOutline(state, timestamp);
+            selectionAnimationId = requestAnimationFrame(animate);
+        } else {
+            selectionAnimationId = null;
+        }
+    }
+    
+    selectionAnimationId = requestAnimationFrame(animate);
+}
+
+function stopSelectionAnimation() {
+    if (selectionAnimationId) {
+        cancelAnimationFrame(selectionAnimationId);
+        selectionAnimationId = null;
+    }
 }
 
 // Metadata Helper Functions
@@ -898,8 +964,13 @@ function setupEventListeners() {
             document.querySelectorAll('[data-tool]').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             state.tool = this.dataset.tool;
+            updateToolOptions();
         });
     });
+    
+    // Tool options
+    document.getElementById('selectAllBtn').addEventListener('click', selectAll);
+    document.getElementById('deselectBtn').addEventListener('click', deselect);
     
     // Color pickers
     document.getElementById('foregroundColor').addEventListener('change', (e) => {
@@ -1082,6 +1153,15 @@ function setupEventListeners() {
                     e.preventDefault();
                     openImage();
                     break;
+                case 'a':
+                    e.preventDefault();
+                    selectAll();
+                    break;
+            }
+        } else if (e.key === 'Delete' || e.key === 'Backspace') {
+            if (state && state.selection) {
+                e.preventDefault();
+                deleteSelection();
             }
         }
     });

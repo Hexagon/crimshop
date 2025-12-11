@@ -56,8 +56,14 @@
                     </h3>
                     <div class="panel-content" id="toolsPanel">
                         <div class="tool-group">
-                            <button class="tool-btn active" data-tool="select" title="Select/Move">
-                                <span>🔲</span> Select
+                            <button class="tool-btn active" data-tool="pointer" title="Pointer (Select Layer)">
+                                <span>↖️</span> Pointer
+                            </button>
+                            <button class="tool-btn" data-tool="rectSelect" title="Rectangular Selection">
+                                <span>🔲</span> Rect Select
+                            </button>
+                            <button class="tool-btn" data-tool="freeformSelect" title="Freeform Selection">
+                                <span>✂️</span> Lasso
                             </button>
                             <button class="tool-btn" data-tool="move" title="Move Layer">
                                 <span>✋</span> Move
@@ -79,6 +85,23 @@
                             </button>
                             <button class="tool-btn" data-tool="text" title="Text">
                                 <span>T</span> Text
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="panel-section">
+                    <h3 class="panel-header" data-panel="toolOptions">
+                        <span class="panel-title">Tool Options</span>
+                        <span class="panel-toggle">▼</span>
+                    </h3>
+                    <div class="panel-content" id="toolOptionsPanel">
+                        <div class="tool-options-group" id="selectionOptions" style="display: none;">
+                            <button class="tool-btn" id="selectAllBtn" title="Select All (Ctrl+A)">
+                                <span>📋</span> Select All
+                            </button>
+                            <button class="tool-btn" id="deselectBtn" title="Deselect">
+                                <span>✖️</span> Deselect
                             </button>
                         </div>
                     </div>

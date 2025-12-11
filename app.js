@@ -637,6 +637,11 @@ function updateMetadataTable() {
         {
             name: 'Technical',
             fields: [
+                { key: 'format', label: 'Format', type: 'text', readOnly: true },
+                { key: 'compression', label: 'Compression', type: 'text', readOnly: true },
+                { key: 'frameCount', label: 'Frame Count', type: 'number', readOnly: true },
+                { key: 'bitDepth', label: 'Bit Depth', type: 'number', readOnly: true },
+                { key: 'colorType', label: 'Color Type', type: 'text', readOnly: true },
                 { key: 'dpiX', label: 'DPI X', type: 'number' },
                 { key: 'dpiY', label: 'DPI Y', type: 'number' },
                 { key: 'physicalWidth', label: 'Physical Width (in)', type: 'number' },
@@ -674,11 +679,11 @@ function addMetadataGroup(tbody, groupName, fields) {
     
     // Add fields in this group
     fields.forEach(field => {
-        addMetadataRow(tbody, field.key, field.label, field.type, field.isCustom || false);
+        addMetadataRow(tbody, field.key, field.label, field.type, field.isCustom || false, field.readOnly || false);
     });
 }
 
-function addMetadataRow(tbody, key, label, type, isCustom) {
+function addMetadataRow(tbody, key, label, type, isCustom, readOnly) {
     const tr = document.createElement('tr');
     
     const tdLabel = document.createElement('td');
@@ -744,6 +749,13 @@ function addMetadataRow(tbody, key, label, type, isCustom) {
     
     input.value = value;
     input.placeholder = '';
+    
+    // Set read-only if specified
+    if (readOnly) {
+        input.readOnly = true;
+        input.style.cursor = 'default';
+        input.style.backgroundColor = 'transparent';
+    }
     
     input.addEventListener('input', (e) => {
         let newValue = e.target.value;
@@ -1077,8 +1089,8 @@ function setupEventListeners() {
         const format = e.target.value;
         const qualityLabel = document.getElementById('qualityLabel');
         
-        // Show quality slider for JPEG and WebP
-        if (format === 'jpeg' || format === 'webp') {
+        // Show quality slider for JPEG, WebP, HEIC, and AVIF
+        if (format === 'jpeg' || format === 'webp' || format === 'heic' || format === 'avif') {
             qualityLabel.style.display = 'block';
         } else {
             qualityLabel.style.display = 'none';

@@ -93,7 +93,7 @@ export function composeLayers(state) {
     state.ctx.clearRect(0, 0, state.canvas.width, state.canvas.height);
     
     // Draw layers from bottom to top
-    state.layers.forEach(layer => {
+    state.layers.forEach((layer, index) => {
         if (layer.visible) {
             state.ctx.globalAlpha = layer.opacity;
             state.ctx.drawImage(layer.canvas, 0, 0);
@@ -101,32 +101,17 @@ export function composeLayers(state) {
     });
     
     state.ctx.globalAlpha = 1.0;
-}
-
-// Ensure layer is at least as large as the workspace canvas
-export function ensureLayerSize(state, layerIndex) {
-    const layer = state.layers[layerIndex];
-    const workspaceWidth = state.canvas.width;
-    const workspaceHeight = state.canvas.height;
     
-    // Check if layer needs to be expanded
-    if (layer.canvas.width < workspaceWidth || layer.canvas.height < workspaceHeight) {
-        const newWidth = Math.max(layer.canvas.width, workspaceWidth);
-        const newHeight = Math.max(layer.canvas.height, workspaceHeight);
-        
-        // Create temp canvas with current content
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = layer.canvas.width;
-        tempCanvas.height = layer.canvas.height;
-        const tempCtx = tempCanvas.getContext('2d');
-        tempCtx.drawImage(layer.canvas, 0, 0);
-        
-        // Resize layer canvas
-        layer.canvas.width = newWidth;
-        layer.canvas.height = newHeight;
-        
-        // Redraw content
-        layer.ctx.clearRect(0, 0, newWidth, newHeight);
-        layer.ctx.drawImage(tempCanvas, 0, 0);
+    // Draw dashed border around active layer if it's smaller than workspace
+    if (state.activeLayerIndex !== undefined && state.layers[state.activeLayerIndex]) {
+        const activeLayer = state.layers[state.activeLayerIndex];
+        if (activeLayer.canvas.width < state.canvas.width || activeLayer.canvas.height < state.canvas.height) {
+            state.ctx.save();
+            state.ctx.strokeStyle = '#ff0000';
+            state.ctx.lineWidth = 2;
+            state.ctx.setLineDash([8, 8]);
+            state.ctx.strokeRect(0, 0, activeLayer.canvas.width, activeLayer.canvas.height);
+            state.ctx.restore();
+        }
     }
 }

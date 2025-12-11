@@ -1,3 +1,5 @@
+![Pura Logo](img/pura.png)
+
 # Pura - Image Editor
 
 A powerful, client-side image editor built with vanilla JavaScript and the [cross-image](https://github.com/cross-org/image) library.

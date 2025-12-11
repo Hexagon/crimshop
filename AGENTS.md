@@ -14,15 +14,15 @@ CrimShop is a client-side image editor built with vanilla JavaScript. It runs en
 ### Core Components
 - `index.html` - Application structure and UI layout
 - `styles.css` - Dark theme styling
-- `app.js` - Main application entry point
+- `app.js` - Main application entry point (1091 lines, reduced from 1764 via modularization)
 - `js/` - Modular JavaScript files:
+  - `constants.js` - Shared constants and imports (Image library, multi-frame formats)
   - `state.js` - State management and workspace handling
   - `layers.js` - Layer operations and management
-  - `drawing.js` - Drawing tools and canvas operations
-  - `file-io.js` - File import/export operations
-  - `effects.js` - Image effects and transforms
+  - `drawing.js` - Drawing tools and canvas operations (brush, eraser, shapes, move)
+  - `file-io.js` - File import/export operations (open, save, import layer, multi-frame support)
+  - `effects.js` - Image effects and transforms (resize, rotate, flip, grayscale, invert, blur, brightness, contrast)
   - `history.js` - Undo/redo functionality
-  - `metadata.js` - Metadata editor
   - `ui.js` - UI updates and event handling
 
 ### State Management
@@ -51,18 +51,19 @@ The application uses ES6 modules for code organization:
 - **Import/export**: Standard ES6 import/export syntax
 - **Shared state**: The `state` object is imported where needed
 - **Entry point**: `app.js` initializes and coordinates all modules
+- **Completed modularization**: All major features have been extracted into focused modules, reducing app.js from 1764 to 1091 lines (38% reduction)
 
 Module dependencies flow:
 ```
-app.js (main)
-  ├── js/state.js (core state, no dependencies)
-  ├── js/layers.js (depends on state)
-  ├── js/drawing.js (depends on state, layers)
-  ├── js/history.js (depends on state, layers)
-  ├── js/file-io.js (depends on state, layers, history)
-  ├── js/effects.js (depends on state, layers, history)
-  ├── js/metadata.js (depends on state)
-  └── js/ui.js (depends on all other modules)
+app.js (main - 1091 lines)
+  ├── js/constants.js (8 lines - shared constants)
+  ├── js/state.js (65 lines - core state, no dependencies)
+  ├── js/layers.js (104 lines - depends on state)
+  ├── js/drawing.js (179 lines - drawing tools)
+  ├── js/file-io.js (340 lines - file operations)
+  ├── js/effects.js (240 lines - effects and transforms)
+  ├── js/history.js (93 lines - depends on state, layers)
+  └── js/ui.js (79 lines - UI helpers)
 ```
 
 ## Code Style

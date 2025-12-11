@@ -481,16 +481,22 @@ export function stopDrawing(state, e, composeLayers, saveState) {
             
         case 'select':
         case 'rectSelect':
-            // Create rectangular selection
-            const selWidth = pos.x - state.startX;
-            const selHeight = pos.y - state.startY;
-            Selection.createRectSelection(state, state.startX, state.startY, selWidth, selHeight);
+            // Create rectangular selection (convert workspace coords to layer coords)
+            const layerStartSel = toLayerCoords(layer, state.startX, state.startY);
+            const layerPosSel = toLayerCoords(layer, pos.x, pos.y);
+            const selWidth = layerPosSel.x - layerStartSel.x;
+            const selHeight = layerPosSel.y - layerStartSel.y;
+            Selection.createRectSelection(state, layerStartSel.x, layerStartSel.y, selWidth, selHeight);
             break;
             
         case 'freeformSelect':
-            // Complete freeform selection
+            // Complete freeform selection (convert workspace coords to layer coords)
             if (state.selectionPath && state.selectionPath.length > 2) {
-                Selection.createFreeformSelection(state, state.selectionPath);
+                const layerPath = state.selectionPath.map(p => {
+                    const lp = toLayerCoords(layer, p.x, p.y);
+                    return { x: lp.x, y: lp.y };
+                });
+                Selection.createFreeformSelection(state, layerPath);
             }
             break;
             

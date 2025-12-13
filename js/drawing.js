@@ -5,10 +5,10 @@ import * as Selection from './selection.js';
 
 export function getMousePos(state, e) {
     const rect = state.canvas.getBoundingClientRect();
-    const zoom = state.zoom || 1.0;
+    // getBoundingClientRect accounts for CSS transforms (including zoom)
     return {
-        x: (e.clientX - rect.left) / zoom,
-        y: (e.clientY - rect.top) / zoom
+        x: (e.clientX - rect.left) * (state.canvas.width / rect.width),
+        y: (e.clientY - rect.top) * (state.canvas.height / rect.height)
     };
 }
 

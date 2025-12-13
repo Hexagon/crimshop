@@ -1047,16 +1047,6 @@ function setupEventListeners() {
     document.getElementById('fileInput').addEventListener('change', handleFileUpload);
     document.getElementById('importLayerInput').addEventListener('change', handleImportLayer);
     
-    // Text tool functions
-    const openTextModal = (x, y) => {
-        state.pendingTextPosition = { x, y };
-        document.getElementById('textInput').value = '';
-        UIModule.showModal('textModal');
-        document.getElementById('textInput').focus();
-    };
-    
-    window.openTextModal = openTextModal; // Make available to canvas event handler
-    
     // Undo/Redo
     document.getElementById('undoBtn').addEventListener('click', undo);
     document.getElementById('redoBtn').addEventListener('click', redo);

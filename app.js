@@ -436,6 +436,10 @@ function applyInvert() {
     EffectsModule.applyInvert(state, composeLayers, saveState);
 }
 
+function applySepia() {
+    EffectsModule.applySepia(state, composeLayers, saveState);
+}
+
 function showEffectModal(effectName, effectFunction) {
     EffectsModule.showEffectModal(effectName, effectFunction);
 }
@@ -1159,6 +1163,7 @@ function setupEventListeners() {
     
     // Effects
     document.getElementById('grayscaleBtn').addEventListener('click', applyGrayscale);
+    document.getElementById('sepiaBtn').addEventListener('click', applySepia);
     document.getElementById('invertBtn').addEventListener('click', applyInvert);
     document.getElementById('brightnessBtn').addEventListener('click', () => {
         showEffectModal('Brightness', 'brightness');
@@ -1166,8 +1171,26 @@ function setupEventListeners() {
     document.getElementById('contrastBtn').addEventListener('click', () => {
         showEffectModal('Contrast', 'contrast');
     });
+    document.getElementById('exposureBtn').addEventListener('click', () => {
+        showEffectModal('Exposure', 'exposure');
+    });
+    document.getElementById('saturationBtn').addEventListener('click', () => {
+        showEffectModal('Saturation', 'saturation');
+    });
+    document.getElementById('hueBtn').addEventListener('click', () => {
+        showEffectModal('Hue', 'hue');
+    });
     document.getElementById('blurBtn').addEventListener('click', () => {
         showEffectModal('Blur', 'blur');
+    });
+    document.getElementById('gaussianBlurBtn').addEventListener('click', () => {
+        showEffectModal('Gaussian Blur', 'gaussianBlur');
+    });
+    document.getElementById('medianFilterBtn').addEventListener('click', () => {
+        showEffectModal('Median Filter', 'medianFilter');
+    });
+    document.getElementById('sharpenBtn').addEventListener('click', () => {
+        showEffectModal('Sharpen', 'sharpen');
     });
     
     // Modal buttons

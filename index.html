@@ -31,41 +31,21 @@
         <!-- Top Toolbar -->
         <div class="toolbar">
             <div class="toolbar-section">
-                <button class="tool-btn" id="newBtn" title="New Image">
-                    <span>📄</span>
-                </button>
-                <button class="tool-btn" id="openBtn" title="Open Image">
-                    <span>📂</span>
-                </button>
-                <button class="tool-btn" id="importLayerBtn" title="Import as Layer">
-                    <span>📥</span>
-                </button>
-                <button class="tool-btn" id="saveBtn" title="Save Image">
-                    <span>💾</span>
-                </button>
-                <button class="tool-btn" id="imageDimensionsBtn" title="Image Dimensions">
-                    <span>📐</span>
-                </button>
+                <button class="tool-btn" id="newBtn" title="New Image" data-icon="newFile"></button>
+                <button class="tool-btn" id="openBtn" title="Open Image" data-icon="open"></button>
+                <button class="tool-btn" id="importLayerBtn" title="Import as Layer" data-icon="import"></button>
+                <button class="tool-btn" id="saveBtn" title="Save Image" data-icon="save"></button>
+                <button class="tool-btn" id="imageDimensionsBtn" title="Image Dimensions" data-icon="dimensions"></button>
             </div>
             <div class="toolbar-section">
-                <button class="tool-btn" id="zoomOutBtn" title="Zoom Out">
-                    <span>🔍-</span>
-                </button>
-                <span id="zoomLevel" style="color: #e0e0e0; padding: 0 8px; display: inline-flex; align-items: center;">100%</span>
-                <button class="tool-btn" id="zoomInBtn" title="Zoom In">
-                    <span>🔍+</span>
-                </button>
-                <button class="tool-btn" id="zoomResetBtn" title="Reset Zoom">
-                    <span>1:1</span>
-                </button>
+                <button class="tool-btn" id="zoomOutBtn" title="Zoom Out" data-icon="zoomOut"></button>
+                <span id="zoomLevel" style="color: #b0b0b0; padding: 0 6px; display: inline-flex; align-items: center; font-size: 11px;">100%</span>
+                <button class="tool-btn" id="zoomInBtn" title="Zoom In" data-icon="zoomIn"></button>
+                <button class="tool-btn" id="zoomResetBtn" title="Reset Zoom" data-icon="zoomReset"></button>
             </div>
             <div class="toolbar-section">
-                <button class="tool-btn" id="undoBtn" title="Undo">
-                    <span>↶</span>
-                </button>
-                <button class="tool-btn" id="redoBtn" title="Redo">
-                    <span>↷</span>
-                </button>
+                <button class="tool-btn" id="undoBtn" title="Undo" data-icon="undo"></button>
+                <button class="tool-btn" id="redoBtn" title="Redo" data-icon="redo"></button>
             </div>
         </div>
 
@@ -88,42 +68,18 @@
                     </h3>
                     <div class="panel-content" id="toolsPanel">
                         <div class="tool-group">
-                            <button class="tool-btn active" data-tool="pointer" title="Pointer (Select Layer)">
-                                <span>↖️</span>
-                            </button>
-                            <button class="tool-btn" data-tool="rectSelect" title="Rectangular Selection">
-                                <span>🔲</span>
-                            </button>
-                            <button class="tool-btn" data-tool="freeformSelect" title="Freeform Selection">
-                                <span>✂️</span>
-                            </button>
-                            <button class="tool-btn" data-tool="move" title="Move Layer">
-                                <span>✋</span>
-                            </button>
-                            <button class="tool-btn" data-tool="brush" title="Brush">
-                                <span>🖌️</span>
-                            </button>
-                            <button class="tool-btn" data-tool="eraser" title="Eraser">
-                                <span>🧹</span>
-                            </button>
-                            <button class="tool-btn" data-tool="fill" title="Fill">
-                                <span>🪣</span>
-                            </button>
-                            <button class="tool-btn" data-tool="gradient" title="Gradient">
-                                <span>🌈</span>
-                            </button>
-                            <button class="tool-btn" data-tool="rect" title="Rectangle">
-                                <span>⬜</span>
-                            </button>
-                            <button class="tool-btn" data-tool="circle" title="Circle">
-                                <span>⭕</span>
-                            </button>
-                            <button class="tool-btn" data-tool="line" title="Line">
-                                <span>📏</span>
-                            </button>
-                            <button class="tool-btn" data-tool="text" title="Text">
-                                <span>T</span>
-                            </button>
+                            <button class="tool-btn active" data-tool="pointer" title="Pointer (Select Layer)" data-icon="pointer"></button>
+                            <button class="tool-btn" data-tool="rectSelect" title="Rectangular Selection" data-icon="rectSelect"></button>
+                            <button class="tool-btn" data-tool="freeformSelect" title="Freeform Selection" data-icon="freeformSelect"></button>
+                            <button class="tool-btn" data-tool="move" title="Move Layer" data-icon="move"></button>
+                            <button class="tool-btn" data-tool="brush" title="Brush" data-icon="brush"></button>
+                            <button class="tool-btn" data-tool="eraser" title="Eraser" data-icon="eraser"></button>
+                            <button class="tool-btn" data-tool="fill" title="Fill" data-icon="fill"></button>
+                            <button class="tool-btn" data-tool="gradient" title="Gradient" data-icon="gradient"></button>
+                            <button class="tool-btn" data-tool="rect" title="Rectangle" data-icon="rectangle"></button>
+                            <button class="tool-btn" data-tool="circle" title="Circle" data-icon="circle"></button>
+                            <button class="tool-btn" data-tool="line" title="Line" data-icon="line"></button>
+                            <button class="tool-btn" data-tool="text" title="Text" data-icon="text"></button>
                         </div>
                     </div>
                 </div>
@@ -141,12 +97,8 @@
                             <input type="range" id="opacity" min="0" max="100" value="100">
                         </div>
                         <div class="tool-options-group" id="selectionOptions" style="display: none;">
-                            <button class="tool-btn" id="selectAllBtn" title="Select All (Ctrl+A)">
-                                <span>📋</span>
-                            </button>
-                            <button class="tool-btn" id="deselectBtn" title="Deselect">
-                                <span>✖️</span>
-                            </button>
+                            <button class="tool-btn" id="selectAllBtn" title="Select All (Ctrl+A)" data-icon="selectAll"></button>
+                            <button class="tool-btn" id="deselectBtn" title="Deselect" data-icon="deselect"></button>
                         </div>
                         <div class="tool-options-group" id="fillOptions" style="display: none;">
                             <label>Tolerance: <span id="fillToleranceValue">32</span></label>
@@ -201,15 +153,15 @@
                         <h1>Pura Image Editor</h1>
                         <p>Create a new image or open an existing one to get started</p>
                         <div class="start-actions">
-                            <button class="start-btn" id="startNewBtn">
-                                <span>📄</span>
+                            <button class="start-btn" id="startNewBtn" data-icon="newFile">
+                                <div class="start-btn-icon"></div>
                                 <div>
                                     <strong>New Image</strong>
                                     <small>Create a blank canvas</small>
                                 </div>
                             </button>
-                            <button class="start-btn" id="startOpenBtn">
-                                <span>📂</span>
+                            <button class="start-btn" id="startOpenBtn" data-icon="open">
+                                <div class="start-btn-icon"></div>
                                 <div>
                                     <strong>Open Image</strong>
                                     <small>Load an existing image</small>

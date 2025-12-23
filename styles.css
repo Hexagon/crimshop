@@ -20,38 +20,38 @@ body {
 /* Toolbar */
 .toolbar {
     background: #2d2d2d;
-    padding: 10px;
+    padding: 6px 8px;
     display: flex;
-    gap: 20px;
+    gap: 12px;
     border-bottom: 1px solid #3d3d3d;
     flex-shrink: 0;
 }
 
 .toolbar-section {
     display: flex;
-    gap: 5px;
+    gap: 4px;
 }
 
 .tool-btn {
-    background: #3d3d3d;
+    background: transparent;
     color: #e0e0e0;
-    border: 1px solid #4d4d4d;
-    padding: 8px;
+    border: 1px solid transparent;
+    padding: 6px;
     cursor: pointer;
-    border-radius: 4px;
-    font-size: 16px;
-    transition: all 0.2s;
+    border-radius: 3px;
+    font-size: 14px;
+    transition: all 0.15s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 5px;
-    min-width: 32px;
-    min-height: 32px;
+    gap: 4px;
+    min-width: 28px;
+    min-height: 28px;
 }
 
 .tool-btn:hover {
-    background: #4d4d4d;
-    border-color: #5d5d5d;
+    background: #3d3d3d;
+    border-color: #4d4d4d;
 }
 
 .tool-btn.active {
@@ -60,8 +60,17 @@ body {
 }
 
 .tool-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
+}
+
+/* SVG Icons */
+.tool-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    stroke: currentColor;
+    stroke-width: 0;
 }
 
 /* Main Content */
@@ -76,43 +85,40 @@ body {
     background: #252525;
     border-bottom: 1px solid #3d3d3d;
     display: flex;
-    padding: 0 10px;
+    padding: 0 8px;
     gap: 2px;
     overflow-x: auto;
     flex-shrink: 0;
 }
 
 .tab {
-    background: #2d2d2d;
-    border: 1px solid #3d3d3d;
+    background: transparent;
+    border: 1px solid transparent;
     border-bottom: none;
-    padding: 8px 12px;
+    padding: 6px 10px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
-    min-width: 120px;
-    max-width: 200px;
-    border-radius: 4px 4px 0 0;
-    margin-top: 2px;
-    transition: all 0.2s;
+    gap: 6px;
+    min-width: 100px;
+    max-width: 180px;
+    border-radius: 3px 3px 0 0;
+    transition: all 0.15s ease;
 }
 
 .tab:hover {
-    background: #3d3d3d;
+    background: #2d2d2d;
 }
 
 .tab.active {
     background: #1e1e1e;
     border-color: #0066cc;
-    border-bottom: 1px solid #1e1e1e;
-    margin-top: 0;
-    padding-top: 10px;
+    border-bottom: 2px solid #0066cc;
 }
 
 .tab-name {
     flex: 1;
-    font-size: 13px;
+    font-size: 12px;
     color: #e0e0e0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -122,18 +128,18 @@ body {
 .tab-close {
     background: transparent;
     border: none;
-    color: #888;
+    color: #666;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1;
     padding: 0;
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 3px;
-    transition: all 0.2s;
+    border-radius: 2px;
+    transition: all 0.15s ease;
 }
 
 .tab-close:hover {
@@ -162,46 +168,58 @@ body {
 }
 
 .start-content h1 {
-    font-size: 36px;
-    margin-bottom: 20px;
+    font-size: 32px;
+    margin-bottom: 16px;
     color: #e0e0e0;
+    font-weight: 600;
 }
 
 .start-content p {
-    font-size: 16px;
+    font-size: 14px;
     color: #b0b0b0;
-    margin-bottom: 40px;
+    margin-bottom: 32px;
 }
 
 .start-actions {
     display: flex;
-    gap: 20px;
+    gap: 16px;
     justify-content: center;
 }
 
 .start-btn {
     background: #2d2d2d;
-    border: 2px solid #4d4d4d;
-    padding: 20px 30px;
+    border: 1px solid #3d3d3d;
+    padding: 18px 24px;
     cursor: pointer;
-    border-radius: 8px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
-    gap: 15px;
-    transition: all 0.3s;
+    gap: 12px;
+    transition: all 0.2s ease;
     color: #e0e0e0;
-    min-width: 200px;
+    min-width: 180px;
 }
 
 .start-btn:hover {
     background: #3d3d3d;
     border-color: #0066cc;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
 }
 
-.start-btn span {
-    font-size: 32px;
+.start-btn-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.start-btn-icon svg {
+    width: 28px;
+    height: 28px;
+    fill: currentColor;
+    opacity: 0.8;
 }
 
 .start-btn div {
@@ -210,47 +228,47 @@ body {
 
 .start-btn strong {
     display: block;
-    font-size: 16px;
-    margin-bottom: 4px;
+    font-size: 15px;
+    margin-bottom: 3px;
 }
 
 .start-btn small {
     display: block;
-    font-size: 12px;
+    font-size: 11px;
     color: #888;
 }
 
 /* Sidebars */
 .sidebar {
     background: #252525;
-    padding: 15px;
+    padding: 8px;
     overflow-y: auto;
     border-right: 1px solid #3d3d3d;
     flex-shrink: 0;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     position: relative;
 }
 
 .sidebar.collapsed {
-    padding: 15px 5px;
+    padding: 8px 4px;
 }
 
 .left-sidebar {
-    width: 200px;
+    width: 160px;
 }
 
 .left-sidebar.collapsed {
-    width: 40px;
+    width: 32px;
 }
 
 .right-sidebar {
-    width: 250px;
+    width: 200px;
     border-right: none;
     border-left: 1px solid #3d3d3d;
 }
 
 .right-sidebar.collapsed {
-    width: 40px;
+    width: 32px;
 }
 
 .sidebar.collapsed > *:not(.collapse-toggle) {
@@ -259,27 +277,29 @@ body {
 
 .collapse-toggle {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #3d3d3d;
-    border: 1px solid #4d4d4d;
-    color: #e0e0e0;
-    padding: 5px 8px;
+    top: 6px;
+    right: 6px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: #888;
+    padding: 4px 6px;
     cursor: pointer;
-    border-radius: 4px;
-    font-size: 12px;
+    border-radius: 3px;
+    font-size: 11px;
     z-index: 10;
-    transition: all 0.2s;
+    transition: all 0.15s ease;
 }
 
 /* Rotate arrow icon when sidebar is collapsed */
 .sidebar.collapsed .collapse-toggle {
-    right: 5px;
+    right: 4px;
     transform: rotate(180deg);
 }
 
 .collapse-toggle:hover {
-    background: #4d4d4d;
+    background: #3d3d3d;
+    color: #e0e0e0;
+    border-color: #4d4d4d;
 }
 
 .sidebar h3 {
@@ -296,38 +316,38 @@ body {
 
 /* Panel Sections */
 .panel-section {
-    margin-bottom: 5px;
+    margin-bottom: 4px;
 }
 
 .panel-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 10px;
-    background: #2d2d2d;
-    border-radius: 4px;
+    padding: 6px 8px;
+    background: transparent;
+    border-radius: 3px;
     cursor: pointer;
     user-select: none;
-    transition: all 0.2s;
-    margin: 5px 0;
+    transition: all 0.15s ease;
+    margin: 2px 0;
 }
 
 .panel-header:hover {
-    background: #353535;
+    background: #2d2d2d;
 }
 
 .panel-title {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
-    color: #e0e0e0;
+    color: #b0b0b0;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .panel-toggle {
-    font-size: 10px;
-    color: #888;
-    transition: transform 0.2s;
+    font-size: 9px;
+    color: #666;
+    transition: transform 0.15s ease;
 }
 
 .panel-section.collapsed .panel-toggle {
@@ -337,9 +357,9 @@ body {
 .panel-content {
     max-height: 1000px;
     overflow: hidden;
-    transition: max-height 0.3s ease, opacity 0.3s ease;
+    transition: max-height 0.2s ease, opacity 0.2s ease;
     opacity: 1;
-    padding: 5px 0;
+    padding: 4px 0;
 }
 
 .panel-section.collapsed .panel-content {
@@ -352,11 +372,12 @@ body {
 .tool-group {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 5px;
+    gap: 3px;
 }
 
 .tool-group .tool-btn {
     justify-content: center;
+    min-height: 32px;
 }
 
 /* Settings */
@@ -533,14 +554,15 @@ input[type="color"] {
 
 .layer-controls {
     display: flex;
-    gap: 5px;
-    margin-bottom: 10px;
+    gap: 4px;
+    margin-bottom: 8px;
 }
 
 .layer-controls .tool-btn {
     flex: 1;
-    font-size: 11px;
-    padding: 6px 8px;
+    font-size: 10px;
+    padding: 5px 6px;
+    min-height: 26px;
 }
 
 /* Transform and Effects */
@@ -548,13 +570,16 @@ input[type="color"] {
 .effects-panel {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 3px;
 }
 
 .transform-controls .tool-btn,
 .effects-panel .tool-btn {
     width: 100%;
     justify-content: center;
+    font-size: 11px;
+    padding: 5px 6px;
+    min-height: 28px;
 }
 
 /* Modals */
